@@ -1,53 +1,33 @@
 import asyncio
 import logging
 
-from aiogram import Bot, Dispatcher
+from aiogram import Bot, Dispatcher, F
 from aiogram import types
 from aiogram.filters.command import Command
-from aiogram.types import PreCheckoutQuery
-
-from config import Token, Payment_Token
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from config import TOKEN
+from payments import order1, pre_checkout_query, successful_payment
 
 dp = Dispatcher()
 
-PRICE = types.LabeledPrice(label='Настоящая Машина Времени', amount=4200000)
+inline_btn = InlineKeyboardMarkup(inline_keyboard=[
+    [InlineKeyboardButton(text="To'lov tizimi", callback_data="Tolov")]
+])
 
 
 @dp.message(Command("start"))
-async def process_buy_command(message: types.Message, bot: Bot):
-    await bot.send_invoice(message.chat.id,
-                           title="iPhone 14 Pro",
-                           description="iPhone 14 Pro max 256GB Deep Purple Smartfoni",
-                           provider_token=Payment_Token,
-                           currency='UZS',
-                           photo_url="https://images.uzum.uz/ck9sgvbk9fq1var6o9h0/original.jpg",
-                           photo_height=512,
-                           photo_width=512,
-                           photo_size=512,
-                           is_flexible=False,
-                           prices=[PRICE],
-                           start_parameter='time-machine-example',
-                           payload='some-invoice-payload-for-our-internal-use'
-                           )
+async def cmd_start(message: types.Message):
+    await message.answer(f"Assalomu Aleykum. Xurmatli {message.from_user.full_name}! botimizga xush kelibsiz 👋",
+                         reply_markup=inline_btn)
 
 
-async def pre_checkout_query(pre_checkout_query: PreCheckoutQuery, bot: Bot):
-    await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
-
-
-async def successful_payment(message: types.Message, bot: Bot):
-    msg = f"""
-To'lov muvaffaqiyatli amalga oshirildi ✅
-Maxsulot nomi : {message.successful_payment.invoice_payload}
-Summa: {message.successful_payment.total_amount // 100} {message.successful_payment.currency} 💸
-Menejerimiz so'rovingizni oldi va allaqachon sizga termoqda 💻
-"""
-
-    await message.answer(msg)
+dp.callback_query.register(order1, F.data == "Tolov")
+dp.pre_checkout_query.register(pre_checkout_query)
+dp.message.register(successful_payment, F.successful_payment)
 
 
 async def main() -> None:
-    bot = Bot(token=Token)
+    bot = Bot(token=TOKEN)
     await dp.start_polling(bot)
 
 
