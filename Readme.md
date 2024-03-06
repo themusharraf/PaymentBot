@@ -1,6 +1,6 @@
 # Aiogram-payment-system-ready-to-use
 config.py
-```python
+```python 
 TOKEN = ''
 PAYMENT_TOKEN = ''
 ```
