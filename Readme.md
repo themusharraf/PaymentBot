@@ -3,7 +3,7 @@ config.py
 ```python
 TOKEN = ''
 PAYMENT_TOKEN = ''
-
+ 
 ```
 ! Payment uchun BotFather dan payment token oling https://t.me/BotFather 
 
