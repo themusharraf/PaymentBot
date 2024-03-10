@@ -1,6 +1,6 @@
 # Aiogram-payment-system
 ```python  
-TOKEN = ''
+TOKEN = '' 
 PAYMENT_TOKEN = ''      
 ```  
 ! Payment uchun BotFather dan payment token oling https://t.me/BotFather  
